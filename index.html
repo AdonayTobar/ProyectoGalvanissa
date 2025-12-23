@@ -564,9 +564,23 @@
         // 1. CARGA Y PROCESAMIENTO DE DATOS (PapaParse + LocalStorage)
         // =================================================================================
         async function loadData() {
-            setStatus("Conectando con Google Sheets y cargando datos...");
+            // =========================================================================
+            // PATRÓN "STALE-WHILE-REVALIDATE": CARGA INSTANTÁNEA + ACTUALIZACIÓN BACKGROUND
+            // =========================================================================
 
-            // Añadimos un timestamp para evitar que el navegador o el proxy nos den una versión vieja
+            // PASO 1: CARGAR INMEDIATAMENTE desde localStorage (sin esperar internet)
+            const hasCachedData = tryLoadFromCache(true); // true = modo silencioso (sin mensaje "Sin Conexión")
+
+            if (hasCachedData) {
+                // Si hay caché, mostrar mensaje discreto de actualización en progreso
+                setStatus("Verificando actualizaciones...", false, 'bg-blue-100 text-blue-800');
+                setTimeout(() => statusMessage.classList.add('hidden'), 2000);
+            } else {
+                // Si NO hay caché, mostrar mensaje de carga inicial
+                setStatus("Cargando catálogo por primera vez...");
+            }
+
+            // PASO 2: MIENTRAS TANTO, intentar actualizar desde Google Sheets en SEGUNDO PLANO
             const timestamp = new Date().getTime();
             const freshURL = "https://api.allorigins.win/raw?url=" + encodeURIComponent(`https://docs.google.com/spreadsheets/d/e/2PACX-1vT8XYpMQEshg2eZghit9nFFjIiRz8_G_PHnlOlYWmsX9kzrN1CH7v_FQE0ciZnU8Va4AZofLfJvm4KF/pub?gid=0&single=true&output=csv&_t=${timestamp}`);
 
@@ -576,30 +590,47 @@
                 skipEmptyLines: true,
                 complete: function (results) {
                     if (results.data.length === 0 || results.errors.length > 0) {
-                        // Si hay errores de parseo pero tenemos caché, intentamos usarla
-                        console.warn("Error en datos remotos, intentando caché...", results.errors);
-                        if (!tryLoadFromCache()) {
-                            const errorMsg = results.errors.length > 0 ? results.errors[0].message : "No se encontraron datos remotos ni locales.";
-                            setStatus("Error al procesar datos: " + errorMsg, true);
+                        console.warn("Error en datos remotos, usando caché existente.", results.errors);
+                        // Si teníamos caché, ya se mostró, así que solo registramos el error
+                        if (!hasCachedData) {
+                            setStatus("Error al cargar datos. Intenta recargar la página.", true);
                         }
                         return;
                     }
 
-                    // ÉXITO: Guardar en caché y procesar
-                    saveToCache(results.data);
-                    processData(results.data);
+                    // ÉXITO: Actualización obtenida
+                    const previousData = localStorage.getItem('productsCache');
+                    const newDataString = JSON.stringify(results.data);
+                    const previousDataString = previousData ? JSON.parse(previousData).data : null;
 
-                    setStatus("Catálogo actualizado exitosamente.", false, 'bg-green-100 text-green-800');
-                    setTimeout(() => statusMessage.classList.add('hidden'), 1500);
+                    // Comparar si realmente hay cambios
+                    const hasChanges = JSON.stringify(previousDataString) !== newDataString;
+
+                    // Guardar en caché
+                    saveToCache(results.data);
+
+                    if (hasCachedData && hasChanges) {
+                        // Si teníamos caché Y hay cambios, actualizar y notificar
+                        processData(results.data);
+                        setStatus("✓ Catálogo actualizado", false, 'bg-green-100 text-green-800');
+                        setTimeout(() => statusMessage.classList.add('hidden'), 2000);
+                    } else if (hasCachedData && !hasChanges) {
+                        // Caché estaba actualizado, no hacer nada (ya se mostró)
+                        console.log("Caché ya estaba actualizado.");
+                    } else {
+                        // Primer carga sin caché
+                        processData(results.data);
+                        setStatus("Catálogo cargado exitosamente.", false, 'bg-green-100 text-green-800');
+                        setTimeout(() => statusMessage.classList.add('hidden'), 1500);
+                    }
                 },
                 error: function (error) {
-                    console.error("Error de red (PapaParse):", error);
-                    // FALLO DE RED: Intentar cargar desde caché
-                    if (tryLoadFromCache()) {
-                        console.log("Datos cargados desde caché por error de red.");
-                    } else {
-                        setStatus("Error de conexión y no hay datos guardados. Verifica tu internet.", true);
+                    console.error("Error de red al actualizar:", error);
+                    // Si hubo error de red pero ya cargamos el caché, no mostrar error
+                    if (!hasCachedData) {
+                        setStatus("Sin conexión y sin datos guardados. Conéctate a internet para cargar el catálogo.", true);
                     }
+                    // Si SÍ hay caché, ya se mostró, así que no hacer nada
                 }
             });
         }
@@ -619,14 +650,17 @@
         }
 
         // Función para intentar cargar desde LocalStorage
-        function tryLoadFromCache() {
+        function tryLoadFromCache(silent = false) {
             try {
                 const cached = localStorage.getItem('productsCache');
                 if (cached) {
                     const { timestamp, data } = JSON.parse(cached);
                     if (data && data.length > 0) {
                         processData(data);
-                        setStatus(`Modo Sin Conexión: Mostrando datos del ${timestamp}`, false, 'bg-orange-100 text-orange-800');
+                        // Solo mostrar mensaje si NO es modo silencioso (carga inicial rápida)
+                        if (!silent) {
+                            setStatus(`Modo Sin Conexión: Mostrando datos del ${timestamp}`, false, 'bg-orange-100 text-orange-800');
+                        }
                         return true;
                     }
                 }
