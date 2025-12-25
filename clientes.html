@@ -116,21 +116,35 @@
                                 d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
                         </svg>
                     </button>
-                    <div
-                        class="w-16 h-16 border-2 border-dashed border-gray-300 rounded-xl flex items-center justify-center text-gray-300">
-                        <span class="text-2xl">+</span>
-                    </div>
-                    <div
-                        class="w-16 h-16 border-2 border-dashed border-gray-300 rounded-xl flex items-center justify-center text-gray-300">
-                        <span class="text-2xl">+</span>
-                    </div>
+                    <button onclick="openSendModal()"
+                        class="w-16 h-16 bg-purple-600 rounded-xl shadow-lg flex items-center justify-center text-white hover:bg-purple-700 hover:scale-105 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500">
+                        <svg class="h-8 w-8" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"
+                            stroke="currentColor">
+                            <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                d="M30.133 1.552c-1.090-1.044-2.291-1.573-3.574-1.573-2.006 0-3.47 1.296-3.87 1.693-0.564 0.558-19.786 19.788-19.786 19.788-0.126 0.126-0.217 0.284-0.264 0.456-0.433 1.602-2.605 8.71-2.627 8.782-0.112 0.364-0.012 0.761 0.256 1.029 0.193 0.192 0.45 0.295 0.713 0.295 0.104 0 0.208-0.016 0.31-0.049 0.073-0.024 7.41-2.395 8.618-2.756 0.159-0.048 0.305-0.134 0.423-0.251 0.763-0.754 18.691-18.483 19.881-19.712 1.231-1.268 1.843-2.59 1.819-3.925-0.025-1.319-0.664-2.589-1.901-3.776z" />
+                        </svg>
+
+                    </button>
+                    <button onclick="openChargeModal()"
+                        class="w-16 h-16 bg-purple-600 rounded-xl shadow-lg flex items-center justify-center text-white hover:bg-purple-700 hover:scale-105 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                            class="h-8 w-8 text-white">
+                            <polyline points="11 7 8 4 5 7" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round" />
+                            <polyline points="13 17 16 20 19 17" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round" />
+                            <path d="M8 20V4M16 4V20" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" />
+                        </svg>
+
+                    </button>
                 </div>
 
                 <div class="mb-6">
                     <div class="relative">
                         <input type="text" id="client-search"
-                            placeholder="Buscar por nombre, apellidos, teléfono, dirección o categoría..."
-                            class="w-full px-4 py-3 pl-12 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 shadow-sm">
+                            placeholder="Buscar por nombre, apellidos, teléfono, dirección o categoría..." class="w-full px-4 py-3 pl-12 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500
+            focus:border-indigo-500 transition duration-150 shadow-sm">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 absolute left-4 top-3.5 text-gray-400"
                             fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -375,6 +389,37 @@
             </form>
         </div>
     </div>
+
+    <!-- MODAL DE PORTABILIDAD -->
+
+    <div id="chargeModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50">
+        <div class="bg-white w-full max-w-md mx-4 rounded-2xl shadow-xl p-6 space-y-4">
+
+            <h2 class="text-xl font-bold text-gray-800">Portabilidad de Contactos</h2>
+            <p class="text-sm text-gray-600">
+                Descarga o importa contactos. Las categorías nuevas se crearán automáticamente.
+            </p>
+
+            <button onclick="exportContactsToCsv()"
+                class="w-full p-3 rounded-lg bg-green-600 text-white font-semibold hover:bg-green-700 transition">
+                Descargar contactos (CSV)
+            </button>
+
+            <input type="file" id="csvFileInput" accept=".csv" class="hidden" onchange="importContactsFromCsv(event)">
+
+            <button onclick="document.getElementById('csvFileInput').click()"
+                class="w-full p-3 rounded-lg bg-blue-600 text-white font-semibold hover:bg-blue-700 transition">
+                Cargar y fusionar CSV
+            </button>
+
+            <button onclick="closeChargeModal()"
+                class="w-full p-2 border rounded-lg text-gray-600 hover:bg-gray-100 transition">
+                Cancelar
+            </button>
+
+        </div>
+    </div>
+
 
     <div id="message-box" class="hidden fixed inset-0 bg-gray-900 bg-opacity-75 z-[100] items-center justify-center">
         <div
@@ -668,12 +713,12 @@
                 const duplicateClient = existingClients.find(client => client.phone === clientData.phone);
                 if (duplicateClient) {
                     const categoriesText = duplicateClient.categories ? duplicateClient.categories.join(', ') : 'Sin categorías';
-                    let message = `⚠️ Ya existe un cliente con el número ${duplicateClient.phone}:\n\n`;
-                    message += `📋 Nombre: ${duplicateClient.name} ${duplicateClient.lastname}\n`;
-                    message += `📍 Dirección: ${duplicateClient.address}\n`;
-                    message += `🏷️ Categorías: ${categoriesText}\n`;
-                    if (duplicateClient.projectAddress) message += `🏗️ Proyecto: ${duplicateClient.projectAddress}\n`;
-                    if (duplicateClient.projectStatus) message += `📊 Estado: ${duplicateClient.projectStatus}\n`;
+                    let message = `⚠️ Ya existe un cliente con el número ${duplicateClient.phone}: \n\n`;
+                    message += `📋 Nombre: ${duplicateClient.name} ${duplicateClient.lastname} \n`;
+                    message += `📍 Dirección: ${duplicateClient.address} \n`;
+                    message += `🏷️ Categorías: ${categoriesText} \n`;
+                    if (duplicateClient.projectAddress) message += `🏗️ Proyecto: ${duplicateClient.projectAddress} \n`;
+                    if (duplicateClient.projectStatus) message += `📊 Estado: ${duplicateClient.projectStatus} \n`;
                     message += `\n❌ No se puede guardar un cliente con el mismo número.`;
                     showMessage(message);
                     return;
@@ -713,9 +758,11 @@
                 }
 
                 noClientsMessage.classList.add('hidden');
+
                 filteredClients.forEach(client => {
                     const clientCard = document.createElement('div');
-                    clientCard.className = 'bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 px-4 py-3 flex items-center justify-between cursor-pointer border border-gray-100';
+                    clientCard.className =
+                        'bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 px-4 py-3 flex items-center justify-between cursor-pointer border border-gray-100';
                     clientCard.onclick = () => openClientDetail(client.id);
 
                     const leftSection = document.createElement('div');
@@ -724,7 +771,6 @@
                     const nameDiv = document.createElement('div');
                     nameDiv.className = 'font-semibold text-gray-900';
                     nameDiv.textContent = `${client.name} ${client.lastname}`;
-
                     leftSection.appendChild(nameDiv);
 
                     if (client.categories && client.categories.length > 0) {
@@ -741,29 +787,162 @@
                     }
 
                     const whatsappBtn = document.createElement('button');
-                    whatsappBtn.className = 'p-2 bg-green-500 text-white rounded-full hover:bg-green-600 transition-colors duration-200 flex-shrink-0';
+                    whatsappBtn.className =
+                        'p-2 bg-green-500 text-white rounded-full hover:bg-green-600 transition-colors duration-200 flex-shrink-0';
+
                     whatsappBtn.onclick = (e) => {
                         e.stopPropagation();
+
                         const phoneNumber = client.phone.replace(/[^0-9]/g, '');
-                        window.open(`https://wa.me/${phoneNumber}`, '_blank');
+
+                        // 🔹 Obtener plantilla
+                        let template = localStorage.getItem('messageTemplate') || '';
+
+                        // 🔹 Reemplazar variables
+                        let personalizedMessage = template
+                            .replaceAll('{{Nombre}}', client.name || '')
+                            .replaceAll('{{Apellido}}', client.lastname || '')
+                            .replaceAll('{{Dirección}}', client.address || '');
+
+                        // 🔹 Codificar para URL
+                        const encodedMessage = encodeURIComponent(personalizedMessage);
+
+                        // 🔹 Abrir WhatsApp
+                        window.open(
+                            `https://wa.me/${phoneNumber}?text=${encodedMessage}`,
+                            '_blank'
+                        );
                     };
+
                     whatsappBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L0 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>';
 
                     clientCard.appendChild(leftSection);
                     clientCard.appendChild(whatsappBtn);
                     clientsList.appendChild(clientCard);
                 });
+
             } catch (error) {
                 console.error("Error al cargar clientes:", error);
             }
         }
+
 
         function openClientDetail(clientId) {
             const client = allClients.find(c => c.id === clientId);
             if (!client) return;
 
             currentClientId = clientId;
-            document.getElementById('edit-client-id').value = clientId;
+
+            if (!document.getElementById('clientViewModal')) {
+                const modalHTML = `
+<div id="clientViewModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/60 backdrop-blur-sm">
+    <div class="bg-white w-full max-w-lg mx-4 rounded-2xl shadow-2xl overflow-hidden">
+
+        <!-- Header -->
+        <div class="px-6 py-4 border-b">
+            <h2 class="text-xl font-bold text-gray-800">Detalle del Cliente</h2>
+        </div>
+
+        <!-- Contenido -->
+        <div class="p-6 space-y-6 text-sm text-gray-700">
+
+            <!-- Información principal -->
+            <div class="space-y-2">
+                <p>
+                    <span class="font-semibold text-gray-600">Nombre:</span>
+                    <span id="view-name" class="ml-1"></span>
+                </p>
+                <p>
+                    <span class="font-semibold text-gray-600">Teléfono:</span>
+                    <span id="view-phone" class="ml-1"></span>
+                </p>
+                <p>
+                    <span class="font-semibold text-gray-600">Dirección:</span>
+                    <span id="view-address" class="ml-1"></span>
+                </p>
+                <p>
+                    <span class="font-semibold text-gray-600">Categorías:</span>
+                    <span id="view-categories" class="ml-1"></span>
+                </p>
+            </div>
+
+            <!-- Información del Proyecto -->
+            <div id="view-project-info" class="hidden rounded-xl bg-sky-900 text-sky-100 p-4 space-y-2 shadow-inner">
+                <h3 class="text-sm font-semibold uppercase tracking-wide text-sky-200">
+                    Información del Proyecto
+                </h3>
+
+                <p>
+                    <span class="font-medium text-sky-300">Dirección:</span>
+                    <span id="view-project-address" class="ml-1"></span>
+                </p>
+                <p>
+                    <span class="font-medium text-sky-300">Estado:</span>
+                    <span id="view-project-status" class="ml-1"></span>
+                </p>
+            </div>
+
+        </div>
+
+        <!-- Footer / Acciones -->
+        <div class="flex justify-end gap-2 px-6 py-4 border-t bg-gray-50">
+            <button
+                onclick="openEditClientModal()"
+                class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
+                Editar
+            </button>
+
+            <button
+                onclick="deleteClient()"
+                class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition">
+                Eliminar
+            </button>
+
+            <button
+                onclick="closeClientViewModal()"
+                class="px-4 py-2 border rounded-lg hover:bg-gray-100 transition">
+                Cerrar
+            </button>
+        </div>
+
+    </div>
+</div>
+
+        `;
+                document.body.insertAdjacentHTML('beforeend', modalHTML);
+            }
+
+            document.getElementById('view-name').textContent = `${client.name} ${client.lastname}`;
+            document.getElementById('view-phone').textContent = client.phone;
+            document.getElementById('view-address').textContent = client.address;
+            document.getElementById('view-categories').textContent = (client.categories || []).join(', ');
+
+            if (client.categories && client.categories.includes('Proyectos')) {
+                document.getElementById('view-project-info').classList.remove('hidden');
+                document.getElementById('view-project-address').textContent = client.projectAddress || '';
+                document.getElementById('view-project-status').textContent = client.projectStatus || '';
+            } else {
+                document.getElementById('view-project-info').classList.add('hidden');
+            }
+
+            const modal = document.getElementById('clientViewModal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeClientViewModal() {
+            const modal = document.getElementById('clientViewModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        function openEditClientModal() {
+            closeClientViewModal();
+
+            const client = allClients.find(c => c.id === currentClientId);
+            if (!client) return;
+
+            document.getElementById('edit-client-id').value = client.id;
             document.getElementById('edit-client-name').value = client.name;
             document.getElementById('edit-client-lastname').value = client.lastname;
             document.getElementById('edit-client-phone').value = client.phone;
@@ -771,29 +950,27 @@
 
             const editCategoriesContainer = document.getElementById('edit-categories-container');
             editCategoriesContainer.innerHTML = '';
+
             categories.forEach(cat => {
+                const isChecked = client.categories && client.categories.includes(cat.name);
                 const label = document.createElement('label');
                 label.className = 'flex items-center space-x-3 cursor-pointer group';
-                const isChecked = client.categories && client.categories.includes(cat.name);
                 label.innerHTML = `
-                    <input type="checkbox" value="${cat.name}" class="edit-category-checkbox w-5 h-5 border-gray-300 rounded focus:ring-2 cursor-pointer" onchange="toggleEditProjectFields()" ${isChecked ? 'checked' : ''} style="accent-color: ${cat.color};">
-                    <span class="text-sm font-medium text-gray-700 group-hover:opacity-75 transition duration-150">${cat.name}</span>
-                `;
+            <input type="checkbox" value="${cat.name}"
+                class="edit-category-checkbox w-5 h-5 border-gray-300 rounded"
+                ${isChecked ? 'checked' : ''}>
+            <span class="text-sm font-medium">${cat.name}</span>
+        `;
                 editCategoriesContainer.appendChild(label);
             });
 
-            if (client.projectAddress) document.getElementById('edit-project-address').value = client.projectAddress;
-            if (client.projectStatus) document.getElementById('edit-project-status').value = client.projectStatus;
+            document.getElementById('edit-project-address').value = client.projectAddress || '';
+            document.getElementById('edit-project-status').value = client.projectStatus || '';
 
             toggleEditProjectFields();
+
             clientDetailModal.classList.remove('hidden');
             clientDetailModal.classList.add('flex');
-        }
-
-        function closeClientDetailModal() {
-            clientDetailModal.classList.add('hidden');
-            clientDetailModal.classList.remove('flex');
-            currentClientId = null;
         }
 
         function toggleEditProjectFields() {
@@ -808,8 +985,11 @@
 
         function updateClient(event) {
             event.preventDefault();
+
             const clientId = document.getElementById('edit-client-id').value;
-            const selectedCategories = Array.from(document.querySelectorAll('.edit-category-checkbox:checked')).map(cb => cb.value);
+            const selectedCategories = Array.from(
+                document.querySelectorAll('.edit-category-checkbox:checked')
+            ).map(cb => cb.value);
 
             const updatedClient = {
                 id: clientId,
@@ -834,7 +1014,8 @@
                     clients[index] = updatedClient;
                     localStorage.setItem('clients', JSON.stringify(clients));
                     showMessage('Cliente actualizado correctamente.');
-                    closeClientDetailModal();
+                    clientDetailModal.classList.add('hidden');
+                    clientDetailModal.classList.remove('flex');
                     loadAndDisplayClients();
                 }
             } catch (error) {
@@ -852,13 +1033,150 @@
                 const filteredClients = clients.filter(c => c.id !== currentClientId);
                 localStorage.setItem('clients', JSON.stringify(filteredClients));
                 showMessage('Cliente eliminado correctamente.');
-                closeClientDetailModal();
+                closeClientViewModal();
                 loadAndDisplayClients();
             } catch (error) {
                 console.error("Error al eliminar cliente:", error);
                 showMessage("Error al eliminar el cliente.");
             }
         }
+        function closeClientDetailModal() { clientDetailModal.classList.add('hidden'); clientDetailModal.classList.remove('flex'); currentClientId = null; }
+
+
+        //FUNCION PARA EL MODAL DE CARGAR CSV O DESCARGAR//
+
+        function openChargeModal() {
+            document.getElementById('chargeModal').classList.remove('hidden');
+            document.getElementById('chargeModal').classList.add('flex');
+        }
+
+        function closeChargeModal() {
+            document.getElementById('chargeModal').classList.add('hidden');
+            document.getElementById('chargeModal').classList.remove('flex');
+        }
+
+        /* ===============================
+           EXPORTAR CSV
+        ================================ */
+        function exportContactsToCsv() {
+            const clients = JSON.parse(localStorage.getItem('clients') || '[]');
+
+            if (!clients.length) {
+                alert('No hay contactos para exportar.');
+                return;
+            }
+
+            const headers = [
+                'id', 'name', 'lastname', 'phone', 'address',
+                'categories', 'projectAddress', 'projectStatus',
+                'createdAt', 'updatedAt'
+            ];
+
+            const rows = clients.map(c => [
+                c.id || '',
+                c.name || '',
+                c.lastname || '',
+                c.phone || '',
+                c.address || '',
+                (c.categories || []).join('|'),
+                c.projectAddress || '',
+                c.projectStatus || '',
+                c.createdAt || '',
+                c.updatedAt || ''
+            ]);
+
+            let csv = headers.join(',') + '\n';
+            rows.forEach(r => {
+                csv += r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(',') + '\n';
+            });
+
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = 'clientes.csv';
+            link.click();
+
+            closeChargeModal();
+        }
+
+        /* ===============================
+           IMPORTAR CSV
+        ================================ */
+        function importContactsFromCsv(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = e => processCsv(e.target.result);
+            reader.readAsText(file);
+
+            event.target.value = '';
+        }
+
+
+        function processCsv(csvText) {
+            const lines = csvText.split('\n').filter(l => l.trim());
+            const headers = lines[0].split(',').map(h => h.replace(/"/g, '').trim());
+
+            let clients = JSON.parse(localStorage.getItem('clients') || '[]');
+            let categories = JSON.parse(localStorage.getItem('categories') || '[]');
+
+            for (let i = 1; i < lines.length; i++) {
+                const values = lines[i].match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g);
+                if (!values) continue;
+
+                const row = {};
+                headers.forEach((h, idx) => {
+                    row[h] = values[idx]?.replace(/^"|"$|""/g, '') || '';
+                });
+
+                const importedCategories = row.categories
+                    ? row.categories.split('|').map(c => c.trim()).filter(Boolean)
+                    : [];
+
+                importedCategories.forEach(cat => {
+                    if (!categories.find(c => c.name === cat)) {
+                        categories.push({
+                            name: cat,
+                            color: '#3b82f6',
+                            createdAt: new Date().toISOString()
+                        });
+                    }
+                });
+
+                const existingIndex = clients.findIndex(c =>
+                    c.phone === row.phone && row.phone
+                );
+
+                const clientData = {
+                    id: row.id || crypto.randomUUID(),
+                    name: row.name,
+                    lastname: row.lastname,
+                    phone: row.phone,
+                    address: row.address,
+                    categories: importedCategories,
+                    projectAddress: row.projectAddress || '',
+                    projectStatus: row.projectStatus || '',
+                    createdAt: row.createdAt || new Date().toISOString(),
+                    updatedAt: new Date().toISOString()
+                };
+
+                if (existingIndex !== -1) {
+                    clientData.createdAt = clients[existingIndex].createdAt;
+                    clients[existingIndex] = clientData;
+                } else {
+                    clients.push(clientData);
+                }
+            }
+
+            localStorage.setItem('clients', JSON.stringify(clients));
+            localStorage.setItem('categories', JSON.stringify(categories));
+
+            closeChargeModal();
+            loadAndDisplayClients();
+            alert('CSV importado correctamente.');
+        }
+
 
         document.addEventListener('DOMContentLoaded', () => {
             initializeCategories();
@@ -906,6 +1224,118 @@
             document.getElementById('logout-button-desktop').addEventListener('click', handleLogout);
             document.getElementById('logout-button-mobile').addEventListener('click', handleLogout);
         });
+        function openSendModal() {
+
+            // ====== MODAL DE REDACTAR MENSAJE ======
+            if (!document.getElementById('sendModal')) {
+                const modalHTML = `
+        <div id="sendModal"
+             class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+
+            <div class="bg-white w-full max-w-lg mx-4 rounded-2xl shadow-2xl
+                        flex flex-col max-h-[90vh] animate-scaleIn">
+
+                <!-- Header -->
+                <div class="flex justify-between items-center p-4 border-b">
+                    <h3 class="text-lg font-bold">Plantilla de Mensaje</h3>
+                    <button id="closeModalBtn" class="text-2xl">&times;</button>
+                </div>
+
+                <!-- Body -->
+                <div class="p-4 space-y-3 overflow-y-auto">
+
+                    <div class="flex flex-wrap gap-2">
+                        <span draggable="true" data-text="{{Nombre}}"
+                            class="bg-blue-100 text-blue-800 text-xs px-3 py-1 rounded-full cursor-grab">
+                            Nombre
+                        </span>
+                        <span draggable="true" data-text="{{Apellido}}"
+                            class="bg-blue-100 text-blue-800 text-xs px-3 py-1 rounded-full cursor-grab">
+                            Apellido
+                        </span>
+                        <span draggable="true" data-text="{{Dirección}}"
+                            class="bg-blue-100 text-blue-800 text-xs px-3 py-1 rounded-full cursor-grab">
+                            Dirección
+                        </span>
+                    </div>
+
+                    <textarea id="modalMessageTemplate"
+                        rows="12"
+                        placeholder="Hola {{Nombre}}, te escribo para..."
+                        class="w-full p-3 border rounded-lg focus:ring-2 ring-purple-500">
+                    </textarea>
+
+                </div>
+
+                <!-- Footer -->
+                <div class="p-4 border-t flex justify-end gap-2">
+                    <button id="cancelBtn"
+                        class="px-4 py-2 border rounded-lg">Cancelar</button>
+                    <button id="saveBtn"
+                        class="px-4 py-2 bg-purple-600 text-white rounded-lg">
+                        Guardar
+                    </button>
+                </div>
+            </div>
+        </div>
+        `;
+
+                document.body.insertAdjacentHTML('beforeend', modalHTML);
+
+                // ====== ANIMACIÓN ======
+                if (!document.getElementById('modalAnimStyle')) {
+                    const style = document.createElement('style');
+                    style.id = 'modalAnimStyle';
+                    style.innerHTML = `
+                @keyframes scaleIn {
+                    from { transform: scale(.95); opacity: 0; }
+                    to { transform: scale(1); opacity: 1; }
+                }
+                .animate-scaleIn {
+                    animation: scaleIn .2s ease-out;
+                }
+            `;
+                    document.head.appendChild(style);
+                }
+
+                // ====== EVENTOS ======
+                const modal = document.getElementById('sendModal');
+                const textarea = document.getElementById('modalMessageTemplate');
+
+                document.getElementById('closeModalBtn').onclick =
+                    document.getElementById('cancelBtn').onclick = () => {
+                        modal.remove();
+                    };
+
+                document.getElementById('saveBtn').onclick = () => {
+                    localStorage.setItem('messageTemplate', textarea.value);
+                    modal.remove();
+                };
+
+                // Drag & Drop
+                document.querySelectorAll('[draggable=true]').forEach(el => {
+                    el.addEventListener('dragstart', e => {
+                        e.dataTransfer.setData('text/plain', el.dataset.text);
+                    });
+                });
+
+                textarea.addEventListener('dragover', e => e.preventDefault());
+                textarea.addEventListener('drop', e => {
+                    e.preventDefault();
+                    const text = e.dataTransfer.getData('text/plain');
+                    const start = textarea.selectionStart;
+                    textarea.value =
+                        textarea.value.slice(0, start) +
+                        text +
+                        textarea.value.slice(start);
+                });
+            }
+
+            // ====== CARGAR PLANTILLA ======
+            const textarea = document.getElementById('modalMessageTemplate');
+            textarea.value = localStorage.getItem('messageTemplate') || '';
+            textarea.focus();
+        }
     </script>
 </body>
 
