@@ -305,6 +305,10 @@
         const markersMap = new Map();
         let deleteConfirmId = null;
 let deleteTimeout = null;
+        let userMarker = null;
+let userAccuracyCircle = null;
+let watchId = null;
+
 
 
         // ----------------------------------------------------
@@ -495,7 +499,61 @@ function closeModal() {
 
             loadProjects();
             resetModal();
+                // 📍 UBICACIÓN EN TIEMPO REAL
+    startLiveLocation();
         });
+
+        //UBICACIÓN EN TIEMPO REAL
+        function startLiveLocation() {
+
+    if (!navigator.geolocation) {
+        alert('Geolocalización no soportada');
+        return;
+    }
+
+    watchId = navigator.geolocation.watchPosition(
+        position => {
+            const lat = position.coords.latitude;
+            const lng = position.coords.longitude;
+            const accuracy = position.coords.accuracy;
+
+            const latlng = [lat, lng];
+
+            // 🟦 Crear o mover marcador
+            if (!userMarker) {
+                userMarker = L.circleMarker(latlng, {
+                    radius: 8,
+                    color: '#2563eb',
+                    fillColor: '#3b82f6',
+                    fillOpacity: 1
+                }).addTo(map);
+
+                userAccuracyCircle = L.circle(latlng, {
+                    radius: accuracy,
+                    color: '#93c5fd',
+                    fillColor: '#bfdbfe',
+                    fillOpacity: 0.3
+                }).addTo(map);
+
+                map.setView(latlng, 16);
+            } else {
+                userMarker.setLatLng(latlng);
+                userAccuracyCircle.setLatLng(latlng);
+                userAccuracyCircle.setRadius(accuracy);
+            }
+        },
+        error => {
+            console.error(error);
+            alert('No se pudo obtener tu ubicación');
+        },
+        {
+            enableHighAccuracy: true,
+            maximumAge: 1000,
+            timeout: 10000
+        }
+    );
+}
+
 
         // ----------------------------------------------------
         // CLICK EN MAPA
@@ -852,6 +910,7 @@ window.deleteProject = function (id) {
 </body>
 
 </html>
+
 
 
 
