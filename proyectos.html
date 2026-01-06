@@ -303,6 +303,9 @@
         let editingProjectId = null;
 
         const markersMap = new Map();
+        let deleteConfirmId = null;
+let deleteTimeout = null;
+
 
         // ----------------------------------------------------
         // MODAL
@@ -800,17 +803,48 @@ function closeModal() {
         // ----------------------------------------------------
         // ELIMINAR
         // ----------------------------------------------------
-        window.deleteProject = function (id) {
-            let projects = getStoredProjects();
-            projects = projects.filter(p => p.id !== id);
-            saveProjects(projects);
+window.deleteProject = function (id) {
 
-            const marker = markersMap.get(id);
-            if (marker) {
-                marker.remove();
-                markersMap.delete(id);
+    // 🟡 PRIMER CLICK → pedir confirmación
+    if (deleteConfirmId !== id) {
+        deleteConfirmId = id;
+
+        // Cambiar texto del botón en el popup
+        const btn = document.querySelector(
+            `button[onclick="deleteProject(${id})"]`
+        );
+
+        if (btn) {
+            btn.textContent = '¿Confirmar?';
+            btn.style.background = '#991b1b';
+        }
+
+        // ⏳ Cancelar confirmación automáticamente
+        deleteTimeout = setTimeout(() => {
+            if (btn) {
+                btn.textContent = 'Eliminar';
+                btn.style.background = '#dc2626';
             }
-        };
+            deleteConfirmId = null;
+        }, 3000);
+
+        return;
+    }
+
+    // 🔴 SEGUNDO CLICK → eliminar definitivamente
+    clearTimeout(deleteTimeout);
+    deleteConfirmId = null;
+
+    let projects = getStoredProjects().filter(p => p.id !== id);
+    saveProjects(projects);
+
+    const marker = markersMap.get(id);
+    if (marker) {
+        marker.remove();
+        markersMap.delete(id);
+    }
+};
+
 
     </script>
 
@@ -818,6 +852,7 @@ function closeModal() {
 </body>
 
 </html>
+
 
 
 
