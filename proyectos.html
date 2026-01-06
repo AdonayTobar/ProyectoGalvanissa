@@ -428,7 +428,12 @@
         // ----------------------------------------------------
         document.addEventListener('DOMContentLoaded', () => {
 
-            map = L.map('map').setView([13.80057, -88.86458], 14);
+            map = L.map('map', {
+                scrollWheelZoom: false, // ❌ evita zoom accidental
+                touchZoom: true,        // ✅ zoom con dedos
+                dragging: true,         // ✅ mover mapa
+                tap: false              // ✅ evita bugs en móvil
+            }).setView([13.80057, -88.86458], 14);
 
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 maxZoom: 19
@@ -764,3 +769,4 @@
 </body>
 
 </html>
+
