@@ -43,6 +43,12 @@
         #product-table {
             display: none;
         }
+        /* 🚫 Bloquear gestos de zoom SOLO cuando el modal está abierto */
+.modal-open {
+    touch-action: none;
+    overscroll-behavior: contain;
+}
+
 
         @media (min-width: 768px) {
             #mobileList {
@@ -65,12 +71,24 @@
             border-radius: 0.5rem;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         }
+        /* 🚫 Bloquear gestos de zoom SOLO cuando el modal está abierto */
+.modal-open {
+    touch-action: none;
+    overscroll-behavior: contain;
+}
+
 
         @media (max-width: 767px) {
             #map {
                 height: 100vh;
                 z-index: 0;
             }
+            /* 🚫 Bloquear gestos de zoom SOLO cuando el modal está abierto */
+.modal-open {
+    touch-action: none;
+    overscroll-behavior: contain;
+}
+
         }
 
         /* FAB */
@@ -341,6 +359,24 @@
             clientResults.classList.remove('hidden');
         });
 
+        //BLOQUEAR PINCH ZOOM CON JS (CLAVE)
+        let lastTouchEnd = 0;
+
+// 🚫 Bloquear doble tap zoom
+document.addEventListener('touchend', function (event) {
+    const now = new Date().getTime();
+    if (now - lastTouchEnd <= 300) {
+        event.preventDefault();
+    }
+    lastTouchEnd = now;
+}, { passive: false });
+
+// 🚫 Bloquear pinch zoom
+document.addEventListener('gesturestart', e => e.preventDefault());
+document.addEventListener('gesturechange', e => e.preventDefault());
+document.addEventListener('gestureend', e => e.preventDefault());
+
+
 
         function selectClient(client) {
             clientNameInput.value = `${client.name} ${client.lastname || ''}`.trim();
@@ -409,6 +445,8 @@
 
             clientSearchInput.value = '';
             clientResults.classList.add('hidden');
+                // 🚫 Bloquear zoom del navegador
+    document.body.classList.add('modal-open');
 
         }
         document.addEventListener('click', e => {
@@ -423,6 +461,9 @@
 function closeModal() {
     modal.classList.add('hidden');
     editingProjectId = null;
+
+        // ✅ Restaurar gestos normales
+    document.body.classList.remove('modal-open');
 
     // 🔧 Forzar recálculo del mapa (MUY IMPORTANTE)
     setTimeout(() => {
@@ -777,5 +818,6 @@ function closeModal() {
 </body>
 
 </html>
+
 
 
