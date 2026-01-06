@@ -3,7 +3,9 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
     <title>Catálogo de Precios - Galvanissa</title>
 
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -418,10 +420,16 @@
 
 
 
-        function closeModal() {
-            modal.classList.add('hidden');
-            editingProjectId = null;
-        }
+function closeModal() {
+    modal.classList.add('hidden');
+    editingProjectId = null;
+
+    // 🔧 Forzar recálculo del mapa (MUY IMPORTANTE)
+    setTimeout(() => {
+        map.invalidateSize();
+    }, 200);
+}
+
 
         // ----------------------------------------------------
         // MAPA
@@ -769,4 +777,5 @@
 </body>
 
 </html>
+
 
