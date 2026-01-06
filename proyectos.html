@@ -201,6 +201,19 @@
             <h2 class="font-bold text-lg text-gray-800">
                 Nuevo Punto
             </h2>
+            <input type="hidden" id="clientId">
+
+            <!-- BUSCADOR DE CLIENTES -->
+            <div class="relative">
+                <input id="clientSearch" class="w-full border rounded px-3 py-2 text-sm"
+                    placeholder="🔍 Buscar cliente por nombre o teléfono">
+
+                <div id="clientResults"
+                    class="absolute w-full bg-white border rounded mt-1 max-h-40 overflow-auto hidden z-50">
+                </div>
+            </div>
+
+
 
             <input id="clientName" class="w-full border rounded px-3 py-2 text-sm" placeholder="Nombre del cliente">
 
@@ -274,12 +287,136 @@
         // ----------------------------------------------------
         // MODAL
         // ----------------------------------------------------
+
+        const clientSearchInput = document.getElementById('clientSearch');
+        const clientResults = document.getElementById('clientResults');
+
+        const clientNameInput = document.getElementById('clientName');
+        const clientPhoneInput = document.getElementById('clientPhone');
+        const clientIdInput = document.getElementById('clientId');
+        clientSearchInput.addEventListener('input', () => {
+            const query = clientSearchInput.value.toLowerCase().trim();
+            clientResults.innerHTML = '';
+
+            if (!query) {
+                clientResults.classList.add('hidden');
+                return;
+            }
+
+            const matches = getClients().filter(c =>
+                `${c.name} ${c.lastname || ''} ${c.phone}`
+                    .toLowerCase()
+                    .includes(query)
+            );
+
+            if (!matches.length) {
+                clientResults.innerHTML = `
+            <div class="px-3 py-2 text-sm text-gray-500">
+                Sin resultados
+            </div>
+        `;
+                clientResults.classList.remove('hidden');
+                return;
+            }
+
+            matches.forEach(client => {
+                const item = document.createElement('div');
+                item.className = 'px-3 py-2 text-sm hover:bg-gray-100 cursor-pointer';
+
+                item.innerHTML = `
+            <div class="font-medium">
+                ${client.name} ${client.lastname || ''}
+            </div>
+            <div class="text-xs text-gray-500">
+                📞 ${client.phone}
+            </div>
+        `;
+
+                item.onclick = () => selectClient(client);
+                clientResults.appendChild(item);
+            });
+
+            clientResults.classList.remove('hidden');
+        });
+
+
+        function selectClient(client) {
+            clientNameInput.value = `${client.name} ${client.lastname || ''}`.trim();
+            clientPhoneInput.value = client.phone;
+            clientIdInput.value = client.id;
+            clientNameInput.dataset.address = client.address || '';
+
+            clientResults.classList.add('hidden');
+            clientSearchInput.value = '';
+        }
+
+
+        clientPhoneInput.addEventListener('blur', () => {
+            const phone = clientPhoneInput.value.trim();
+            if (!phone) return;
+
+            const client = findClientByPhone(phone);
+
+            if (client) {
+                clientNameInput.value = `${client.name} ${client.lastname || ''}`.trim();
+                clientPhoneInput.value = client.phone;
+                clientIdInput.value = client.id;
+                clientNameInput.dataset.address = client.address || '';
+            } else {
+                clientIdInput.value = '';
+                clientNameInput.dataset.address = '';
+            }
+        });
+
+
         const modal = document.getElementById('pointModal');
+
+
+        function resetModal() {
+            // Inputs principales
+            clientNameInput.value = '';
+            clientPhoneInput.value = '';
+            material.value = '';
+            closeDate.value = '';
+            notes.value = '';
+
+            // Cliente vinculado
+            clientIdInput.value = '';
+            clientNameInput.dataset.address = '';
+
+            // Buscador
+            clientSearchInput.value = '';
+            clientResults.innerHTML = '';
+            clientResults.classList.add('hidden');
+
+            // Estado del modal
+            editingProjectId = null;
+            selectedLatLng = null;
+
+            // Limpia marcador temporal
+            if (tempMarker) {
+                map.removeLayer(tempMarker);
+                tempMarker = null;
+            }
+        }
+
 
         function openModal() {
             modal.classList.remove('hidden');
             modal.classList.add('flex');
+
+            clientSearchInput.value = '';
+            clientResults.classList.add('hidden');
+
         }
+        document.addEventListener('click', e => {
+            if (!clientResults.contains(e.target) &&
+                e.target !== clientSearchInput) {
+                clientResults.classList.add('hidden');
+            }
+        });
+
+
 
         function closeModal() {
             modal.classList.add('hidden');
@@ -300,6 +437,7 @@
             map.on('click', onMapClick);
 
             loadProjects();
+            resetModal();
         });
 
         // ----------------------------------------------------
@@ -322,8 +460,15 @@
         // ----------------------------------------------------
         // BOTONES MODAL
         // ----------------------------------------------------
-        document.getElementById('openModalBtn').onclick = openModal;
-        document.getElementById('cancelBtn').onclick = closeModal;
+        document.getElementById('openModalBtn').onclick = () => {
+            resetModal();
+            openModal();
+        };
+
+        document.getElementById('cancelBtn').onclick = () => {
+            resetModal();
+            closeModal();
+        };
 
         // ----------------------------------------------------
         // UBICACIÓN ACTUAL
@@ -347,9 +492,19 @@
         // ----------------------------------------------------
         document.getElementById('selectMapBtn').onclick = () => {
             selectingFromMap = true;
+
+            // 🔴 OCULTAR MARCADOR ORIGINAL SI SE ESTÁ EDITANDO
+            if (editingProjectId) {
+                const marker = markersMap.get(editingProjectId);
+                if (marker) {
+                    marker.remove();
+                }
+            }
+
             closeModal();
             map.getContainer().style.cursor = 'crosshair';
         };
+
 
         // ----------------------------------------------------
         // FECHAS Y COLORES
@@ -383,6 +538,19 @@
         // ----------------------------------------------------
         // LOCALSTORAGE
         // ----------------------------------------------------
+
+        function getClients() {
+            return JSON.parse(localStorage.getItem('clients') || '[]');
+        }
+        function findClientByPhone(phone) {
+            const clean = phone.replace(/[^0-9]/g, '');
+            return getClients().find(c =>
+                c.phone && c.phone.replace(/[^0-9]/g, '') === clean
+            );
+        }
+
+
+
         function getStoredProjects() {
             return JSON.parse(localStorage.getItem('projects')) || [];
         }
@@ -443,6 +611,10 @@
             <div style="margin-bottom:6px;font-size:14px">
                 🧱 ${project.material}
             </div>
+            <div style="font-size:13px;color:#374151;margin-bottom:6px">
+    📍 ${project.address || 'Sin dirección'}
+</div>
+
 
             <div style="font-size:13px;color:#374151;margin-bottom:10px">
                 📝 ${project.notes || 'Sin notas'}
@@ -487,17 +659,15 @@
             if (editingProjectId) {
 
                 const index = projects.findIndex(p => p.id === editingProjectId);
+                if (index === -1) return;
 
-                const oldMarker = markersMap.get(editingProjectId);
-                if (oldMarker) {
-                    oldMarker.remove();
-                    markersMap.delete(editingProjectId);
-                }
-
+                // ACTUALIZAR DATOS DEL PROYECTO
                 projects[index] = {
                     ...projects[index],
-                    name: clientName.value,
-                    phone: clientPhone.value,
+                    clientId: clientIdInput.value || null,
+                    address: clientNameInput.dataset.address || '',
+                    name: clientNameInput.value,
+                    phone: clientPhoneInput.value,
                     material: material.value,
                     closeDate: closeDate.value,
                     notes: notes.value,
@@ -505,19 +675,30 @@
                     lng: selectedLatLng.lng
                 };
 
+                // 🔴 ELIMINAR MARCADOR VIEJO (EVITA DUPLICADOS)
+                const oldMarker = markersMap.get(editingProjectId);
+                if (oldMarker) {
+                    oldMarker.remove();
+                    markersMap.delete(editingProjectId);
+                }
+
+                // 🟢 CREAR MARCADOR NUEVO CON DATOS ACTUALIZADOS
                 createMarker(projects[index]);
 
             } else {
 
                 const project = {
                     id: Date.now(),
-                    name: clientName.value,
-                    phone: clientPhone.value,
+                    clientId: clientIdInput.value || null,
+                    address: clientNameInput.dataset.address || '',
+                    name: clientNameInput.value,
+                    phone: clientPhoneInput.value,
                     material: material.value,
                     closeDate: closeDate.value,
                     notes: notes.value,
                     lat: selectedLatLng.lat,
-                    lng: selectedLatLng.lng
+                    lng: selectedLatLng.lng,
+                    createdAt: new Date().toISOString()
                 };
 
                 projects.push(project);
@@ -526,30 +707,41 @@
 
             saveProjects(projects);
 
-            if (tempMarker) map.removeLayer(tempMarker);
-            tempMarker = null;
+            // LIMPIAR MARCADOR TEMPORAL
+            if (tempMarker) {
+                map.removeLayer(tempMarker);
+                tempMarker = null;
+            }
+
             selectedLatLng = null;
 
+            resetModal();
             closeModal();
         };
+
+
 
         // ----------------------------------------------------
         // EDITAR
         // ----------------------------------------------------
         window.editProject = function (id) {
             const project = getStoredProjects().find(p => p.id === id);
+            if (!project) return;
 
             editingProjectId = id;
             selectedLatLng = { lat: project.lat, lng: project.lng };
 
-            clientName.value = project.name;
-            clientPhone.value = project.phone;
+            clientNameInput.value = project.name;
+            clientPhoneInput.value = project.phone;
             material.value = project.material;
             closeDate.value = project.closeDate;
             notes.value = project.notes || '';
+            clientIdInput.value = project.clientId || '';
+            clientNameInput.dataset.address = project.address || '';
 
             openModal();
         };
+
 
         // ----------------------------------------------------
         // ELIMINAR
