@@ -3,8 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport"
-      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
     <title>Catálogo de Precios - Galvanissa</title>
 
@@ -43,11 +42,12 @@
         #product-table {
             display: none;
         }
+
         /* 🚫 Bloquear gestos de zoom SOLO cuando el modal está abierto */
-.modal-open {
-    touch-action: none;
-    overscroll-behavior: contain;
-}
+        .modal-open {
+            touch-action: none;
+            overscroll-behavior: contain;
+        }
 
 
         @media (min-width: 768px) {
@@ -71,11 +71,12 @@
             border-radius: 0.5rem;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         }
+
         /* 🚫 Bloquear gestos de zoom SOLO cuando el modal está abierto */
-.modal-open {
-    touch-action: none;
-    overscroll-behavior: contain;
-}
+        .modal-open {
+            touch-action: none;
+            overscroll-behavior: contain;
+        }
 
 
         @media (max-width: 767px) {
@@ -83,11 +84,12 @@
                 height: 100vh;
                 z-index: 0;
             }
+
             /* 🚫 Bloquear gestos de zoom SOLO cuando el modal está abierto */
-.modal-open {
-    touch-action: none;
-    overscroll-behavior: contain;
-}
+            .modal-open {
+                touch-action: none;
+                overscroll-behavior: contain;
+            }
 
         }
 
@@ -213,6 +215,15 @@
             ➕
         </button>
     </div>
+    <!-- FAB LISTA DE PROYECTOS -->
+    <div class="fixed bottom-8 left-8 z-40">
+        <button id="openListBtn"
+            class="bg-black text-white w-14 h-14 rounded-full shadow-lg flex items-center justify-center text-xl hover:scale-110 transition"
+            title="Ver proyectos">
+            📋
+        </button>
+    </div>
+
 
     <div id="pointModal" class="fixed inset-0 bg-black/40 hidden items-center justify-center z-50">
 
@@ -265,6 +276,31 @@
 
         </div>
     </div>
+    <!-- MODAL LISTA DE PROYECTOS (PANTALLA COMPLETA) -->
+    <div id="projectListModal" class="fixed inset-0 bg-white hidden z-50 flex flex-col">
+
+        <!-- HEADER -->
+        <div class="p-4 border-b flex items-center justify-between">
+            <h2 class="font-bold text-lg">📋 Proyectos</h2>
+            <button id="closeListBtn" class="text-red-600 font-semibold text-sm">
+                Cerrar
+            </button>
+        </div>
+
+        <!-- BUSCADOR -->
+        <div class="p-4 border-b">
+            <input id="projectSearch" class="w-full border rounded px-3 py-2 text-sm"
+                placeholder="Buscar por nombre, teléfono, material o dirección">
+        </div>
+
+        <!-- LISTA -->
+        <div id="projectList" class="flex-1 overflow-auto divide-y">
+            <!-- items -->
+        </div>
+
+    </div>
+
+
 
 
 
@@ -304,10 +340,15 @@
 
         const markersMap = new Map();
         let deleteConfirmId = null;
-let deleteTimeout = null;
+        let deleteTimeout = null;
         let userMarker = null;
-let userAccuracyCircle = null;
-let watchId = null;
+        let userAccuracyCircle = null;
+        let watchId = null;
+
+        const projectListModal = document.getElementById('projectListModal');
+        const projectListDiv = document.getElementById('projectList');
+        const projectSearchInput = document.getElementById('projectSearch');
+
 
 
 
@@ -369,19 +410,19 @@ let watchId = null;
         //BLOQUEAR PINCH ZOOM CON JS (CLAVE)
         let lastTouchEnd = 0;
 
-// 🚫 Bloquear doble tap zoom
-document.addEventListener('touchend', function (event) {
-    const now = new Date().getTime();
-    if (now - lastTouchEnd <= 300) {
-        event.preventDefault();
-    }
-    lastTouchEnd = now;
-}, { passive: false });
+        // 🚫 Bloquear doble tap zoom
+        document.addEventListener('touchend', function (event) {
+            const now = new Date().getTime();
+            if (now - lastTouchEnd <= 300) {
+                event.preventDefault();
+            }
+            lastTouchEnd = now;
+        }, { passive: false });
 
-// 🚫 Bloquear pinch zoom
-document.addEventListener('gesturestart', e => e.preventDefault());
-document.addEventListener('gesturechange', e => e.preventDefault());
-document.addEventListener('gestureend', e => e.preventDefault());
+        // 🚫 Bloquear pinch zoom
+        document.addEventListener('gesturestart', e => e.preventDefault());
+        document.addEventListener('gesturechange', e => e.preventDefault());
+        document.addEventListener('gestureend', e => e.preventDefault());
 
 
 
@@ -452,8 +493,8 @@ document.addEventListener('gestureend', e => e.preventDefault());
 
             clientSearchInput.value = '';
             clientResults.classList.add('hidden');
-                // 🚫 Bloquear zoom del navegador
-    document.body.classList.add('modal-open');
+            // 🚫 Bloquear zoom del navegador
+            document.body.classList.add('modal-open');
 
         }
         document.addEventListener('click', e => {
@@ -465,18 +506,18 @@ document.addEventListener('gestureend', e => e.preventDefault());
 
 
 
-function closeModal() {
-    modal.classList.add('hidden');
-    editingProjectId = null;
+        function closeModal() {
+            modal.classList.add('hidden');
+            editingProjectId = null;
 
-        // ✅ Restaurar gestos normales
-    document.body.classList.remove('modal-open');
+            // ✅ Restaurar gestos normales
+            document.body.classList.remove('modal-open');
 
-    // 🔧 Forzar recálculo del mapa (MUY IMPORTANTE)
-    setTimeout(() => {
-        map.invalidateSize();
-    }, 200);
-}
+            // 🔧 Forzar recálculo del mapa (MUY IMPORTANTE)
+            setTimeout(() => {
+                map.invalidateSize();
+            }, 200);
+        }
 
 
         // ----------------------------------------------------
@@ -499,60 +540,60 @@ function closeModal() {
 
             loadProjects();
             resetModal();
-                // 📍 UBICACIÓN EN TIEMPO REAL
-    startLiveLocation();
+            // 📍 UBICACIÓN EN TIEMPO REAL
+            startLiveLocation();
         });
 
         //UBICACIÓN EN TIEMPO REAL
         function startLiveLocation() {
 
-    if (!navigator.geolocation) {
-        alert('Geolocalización no soportada');
-        return;
-    }
-
-    watchId = navigator.geolocation.watchPosition(
-        position => {
-            const lat = position.coords.latitude;
-            const lng = position.coords.longitude;
-            const accuracy = position.coords.accuracy;
-
-            const latlng = [lat, lng];
-
-            // 🟦 Crear o mover marcador
-            if (!userMarker) {
-                userMarker = L.circleMarker(latlng, {
-                    radius: 8,
-                    color: '#2563eb',
-                    fillColor: '#3b82f6',
-                    fillOpacity: 1
-                }).addTo(map);
-
-                userAccuracyCircle = L.circle(latlng, {
-                    radius: accuracy,
-                    color: '#93c5fd',
-                    fillColor: '#bfdbfe',
-                    fillOpacity: 0.3
-                }).addTo(map);
-
-                map.setView(latlng, 16);
-            } else {
-                userMarker.setLatLng(latlng);
-                userAccuracyCircle.setLatLng(latlng);
-                userAccuracyCircle.setRadius(accuracy);
+            if (!navigator.geolocation) {
+                alert('Geolocalización no soportada');
+                return;
             }
-        },
-        error => {
-            console.error(error);
-            alert('No se pudo obtener tu ubicación');
-        },
-        {
-            enableHighAccuracy: true,
-            maximumAge: 1000,
-            timeout: 10000
+
+            watchId = navigator.geolocation.watchPosition(
+                position => {
+                    const lat = position.coords.latitude;
+                    const lng = position.coords.longitude;
+                    const accuracy = position.coords.accuracy;
+
+                    const latlng = [lat, lng];
+
+                    // 🟦 Crear o mover marcador
+                    if (!userMarker) {
+                        userMarker = L.circleMarker(latlng, {
+                            radius: 8,
+                            color: '#2563eb',
+                            fillColor: '#3b82f6',
+                            fillOpacity: 1
+                        }).addTo(map);
+
+                        userAccuracyCircle = L.circle(latlng, {
+                            radius: accuracy,
+                            color: '#93c5fd',
+                            fillColor: '#bfdbfe',
+                            fillOpacity: 0.3
+                        }).addTo(map);
+
+                        map.setView(latlng, 16);
+                    } else {
+                        userMarker.setLatLng(latlng);
+                        userAccuracyCircle.setLatLng(latlng);
+                        userAccuracyCircle.setRadius(accuracy);
+                    }
+                },
+                error => {
+                    console.error(error);
+                    alert('No se pudo obtener tu ubicación');
+                },
+                {
+                    enableHighAccuracy: true,
+                    maximumAge: 1000,
+                    timeout: 10000
+                }
+            );
         }
-    );
-}
 
 
         // ----------------------------------------------------
@@ -584,6 +625,23 @@ function closeModal() {
             resetModal();
             closeModal();
         };
+
+        //Botones Abrir/Cerrar lista
+        document.getElementById('openListBtn').onclick = () => {
+            renderProjectList();
+            projectListModal.classList.remove('hidden');
+        };
+
+        document.getElementById('closeListBtn').onclick = () => {
+            projectListModal.classList.add('hidden');
+        };
+
+        //Buscador en tiempo real
+        projectSearchInput.addEventListener('input', e => {
+            renderProjectList(e.target.value);
+        });
+
+
 
         // ----------------------------------------------------
         // UBICACIÓN ACTUAL
@@ -759,6 +817,63 @@ function closeModal() {
             getStoredProjects().forEach(createMarker);
         }
 
+        //Funcion para cargar los proyectos en el modal
+        function renderProjectList(filter = '') {
+
+            let projects = getStoredProjects();
+
+            // 🔥 ORDENAR DE MÁS URGENTE A MENOS
+            projects.sort((a, b) =>
+                daysRemaining(a.closeDate) - daysRemaining(b.closeDate)
+            );
+
+            projectListDiv.innerHTML = '';
+
+            projects
+                .filter(p =>
+                    `${p.name} ${p.phone} ${p.material} ${p.address}`
+                        .toLowerCase()
+                        .includes(filter.toLowerCase())
+                )
+                .forEach(project => {
+
+                    const days = daysRemaining(project.closeDate);
+                    const color = getMarkerColorByDays(days);
+
+                    const item = document.createElement('div');
+                    item.className = 'p-4 cursor-pointer hover:bg-gray-100';
+
+                    item.innerHTML = `
+                <div class="flex justify-between items-center">
+                    <div>
+                        <div class="font-bold">${project.name}</div>
+                        <div class="text-sm text-gray-500">
+                            📞 ${project.phone}
+                        </div>
+                        <div class="text-sm">
+                            🧱 ${project.material}
+                        </div>
+                    </div>
+                    <span class="text-xs px-2 py-1 rounded-full bg-${color}-100">
+                        ${days} días
+                    </span>
+                </div>
+            `;
+
+                    item.onclick = () => {
+                        const marker = markersMap.get(project.id);
+                        if (marker) {
+                            map.setView(marker.getLatLng(), 17);
+                            marker.openPopup();
+                        }
+                        projectListModal.classList.add('hidden');
+                    };
+
+                    projectListDiv.appendChild(item);
+                });
+        }
+
+
         // ----------------------------------------------------
         // GUARDAR / EDITAR
         // ----------------------------------------------------
@@ -861,47 +976,47 @@ function closeModal() {
         // ----------------------------------------------------
         // ELIMINAR
         // ----------------------------------------------------
-window.deleteProject = function (id) {
+        window.deleteProject = function (id) {
 
-    // 🟡 PRIMER CLICK → pedir confirmación
-    if (deleteConfirmId !== id) {
-        deleteConfirmId = id;
+            // 🟡 PRIMER CLICK → pedir confirmación
+            if (deleteConfirmId !== id) {
+                deleteConfirmId = id;
 
-        // Cambiar texto del botón en el popup
-        const btn = document.querySelector(
-            `button[onclick="deleteProject(${id})"]`
-        );
+                // Cambiar texto del botón en el popup
+                const btn = document.querySelector(
+                    `button[onclick="deleteProject(${id})"]`
+                );
 
-        if (btn) {
-            btn.textContent = '¿Confirmar?';
-            btn.style.background = '#991b1b';
-        }
+                if (btn) {
+                    btn.textContent = '¿Confirmar?';
+                    btn.style.background = '#991b1b';
+                }
 
-        // ⏳ Cancelar confirmación automáticamente
-        deleteTimeout = setTimeout(() => {
-            if (btn) {
-                btn.textContent = 'Eliminar';
-                btn.style.background = '#dc2626';
+                // ⏳ Cancelar confirmación automáticamente
+                deleteTimeout = setTimeout(() => {
+                    if (btn) {
+                        btn.textContent = 'Eliminar';
+                        btn.style.background = '#dc2626';
+                    }
+                    deleteConfirmId = null;
+                }, 3000);
+
+                return;
             }
+
+            // 🔴 SEGUNDO CLICK → eliminar definitivamente
+            clearTimeout(deleteTimeout);
             deleteConfirmId = null;
-        }, 3000);
 
-        return;
-    }
+            let projects = getStoredProjects().filter(p => p.id !== id);
+            saveProjects(projects);
 
-    // 🔴 SEGUNDO CLICK → eliminar definitivamente
-    clearTimeout(deleteTimeout);
-    deleteConfirmId = null;
-
-    let projects = getStoredProjects().filter(p => p.id !== id);
-    saveProjects(projects);
-
-    const marker = markersMap.get(id);
-    if (marker) {
-        marker.remove();
-        markersMap.delete(id);
-    }
-};
+            const marker = markersMap.get(id);
+            if (marker) {
+                marker.remove();
+                markersMap.delete(id);
+            }
+        };
 
 
     </script>
@@ -910,6 +1025,7 @@ window.deleteProject = function (id) {
 </body>
 
 </html>
+
 
 
 
