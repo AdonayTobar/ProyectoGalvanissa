@@ -507,6 +507,33 @@
 
 
         // =================================================================================
+        // FUNCIÓN: COPIAR CÓDIGO AL PORTAPAPELES
+        // =================================================================================
+        function copyToClipboard(text, event) {
+            if (!text || !text.trim()) return;
+
+            navigator.clipboard.writeText(text.trim()).then(() => {
+                // Feedback visual: cambia temporalmente el color del texto
+                const el = event.target;
+                const originalColor = el.style.color;
+                el.style.color = '#10b981'; // verde éxito
+                el.style.transition = 'color 0.2s ease';
+
+                // Restaurar color original después de 800ms
+                setTimeout(() => {
+                    el.style.color = originalColor || '';
+                }, 800);
+
+                // Mostrar toast pequeño (opcional, si quieres)
+                // showMessage(`Código "${text.trim()}" copiado`); 
+                // ^ Descomenta si quieres el mensaje modal, o deja solo el color verde
+            }).catch(err => {
+                console.error('Error al copiar:', err);
+            });
+        }
+
+
+        // =================================================================================
         // 1. CARGA Y PROCESAMIENTO DE DATOS (PapaParse + LocalStorage)
         // =================================================================================
         async function loadData() {
@@ -913,7 +940,14 @@
                 displayValue = formatCurrency(numberValue);
                 if (cell) cell.classList.add('font-extrabold', 'text-left', 'color-galvanissa');
             } else if (key === codeColumnKey) {
-                if (cell) cell.classList.add('font-medium', 'text-gray-900', 'font-mono');
+                if (cell) {
+                    cell.classList.add('font-medium', 'text-gray-900', 'font-mono', 'cursor-pointer', 'hover:text-indigo-600', 'hover:underline');
+                    cell.title = 'Click para copiar código';
+                    cell.style.userSelect = 'none';
+                    cell.style.webkitUserSelect = 'none';
+                    // Guardar el valor para el onclick
+                    cell.dataset.codeValue = value || '';
+                }
             } else {
                 if (cell) cell.classList.add('text-left', 'text-gray-700');
             }
@@ -1000,15 +1034,26 @@
                         const displayValue = formatCellValue(key, value, cell);
                         cell.textContent = displayValue;
 
+                        // Si es la columna de código, agregar click para copiar
+                        if (key === codeColumnKey && value && value.trim()) {
+                            cell.addEventListener('click', (e) => copyToClipboard(value, e));
+                        }
+
                         // === LÓGICA DE RENDERIZADO MÓVIL (Normal) ===
                         const mobileValue = getMobileValue(key, value);
 
                         if (key === keyIndices.codigo) {
+                            const safeCode = (value || '').replace(/'/g, "\\'");
                             topRowHTML += `
-                                <div class="flex flex-col flex-shrink ml-2">
-                                    <span class="text-sm text-gray-900 font-bold">${mobileValue}</span>
-                                </div>
-                            `;
+        <div class="flex flex-col flex-shrink ml-2">
+            <span class="text-sm text-gray-900 font-bold cursor-pointer hover:text-indigo-600 select-none"
+                  style="user-select:none;-webkit-user-select:none;"
+                  title="Toca para copiar código"
+                  onclick="navigator.clipboard.writeText('${safeCode}').then(()=>{this.style.color='#10b981';setTimeout(()=>this.style.color='',800)}).catch(()=>{})">
+                ${mobileValue}
+            </span>
+        </div>
+    `;
                         } else if (key === keyIndices.precio) {
                             topRowHTML += `
                                 <div class="flex-shrink-0 text-right mr-2">
@@ -1410,7 +1455,7 @@
             });
         }
 
-         // ======================================================
+        // ======================================================
         // BUSCADOR DE CLIENTES (AUTOCOMPLETE) + WHATSAPP
         // ======================================================
 
@@ -1555,7 +1600,7 @@
                 closeQuoteModal();
             });
         });
-        
+
     </script>
 
 </body>
