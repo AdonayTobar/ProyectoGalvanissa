@@ -72,25 +72,11 @@
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         }
 
-        /* 🚫 Bloquear gestos de zoom SOLO cuando el modal está abierto */
-        .modal-open {
-            touch-action: none;
-            overscroll-behavior: contain;
-        }
-
-
         @media (max-width: 767px) {
             #map {
                 height: 100vh;
                 z-index: 0;
             }
-
-            /* 🚫 Bloquear gestos de zoom SOLO cuando el modal está abierto */
-            .modal-open {
-                touch-action: none;
-                overscroll-behavior: contain;
-            }
-
         }
 
         /* FAB */
@@ -142,72 +128,47 @@
 </head>
 
 <body class="antialiased">
-    <!-- Añadimos un ancla invisible en la parte superior -->
     <a id="top"></a>
 
-    <!-- Contenido Principal -->
     <div id="main-content">
-        <!-- Navbar Responsivo -->
         <header class="bg-white shadow-md sticky top-0 z-50">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex justify-between items-center h-16">
-                    <!-- Logo -->
-                    <a href="#top"
-                        class="flex-shrink-0 text-xl font-extrabold tracking-tight transition duration-150 ease-in-out hover:text-indigo-800"
-                        style="color: #293241;"
-                        onclick="event.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' });">
+                    <a href="#top" class="flex-shrink-0 text-xl font-extrabold tracking-tight transition duration-150 ease-in-out hover:text-indigo-800" style="color: #293241;" onclick="event.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' });">
                         Adonay Tobar
                     </a>
 
-                    <!-- Navegación (Desktop/Tablet) -->
                     <nav id="main-nav" class="hidden md:flex space-x-6 items-center">
-                        <a href="index.html"
-                            class="text-indigo-600 font-bold transition duration-150 ease-in-out">Precios</a>
-                        <a href="clientes.html"
-                            class="text-gray-600 hover:text-indigo-600 font-medium transition duration-150 ease-in-out">Clientes</a>
-                        <a href="proyectos.html"
-                            class="text-gray-600 hover:text-indigo-600 font-medium transition duration-150 ease-in-out">Proyectos</a>
+                        <a href="index.html" class="text-indigo-600 font-bold transition duration-150 ease-in-out">Precios</a>
+                        <a href="clientes.html" class="text-gray-600 hover:text-indigo-600 font-medium transition duration-150 ease-in-out">Clientes</a>
+                        <a href="proyectos.html" class="text-gray-600 hover:text-indigo-600 font-medium transition duration-150 ease-in-out">Proyectos</a>
                     </nav>
 
-                    <!-- Menú Hamburguesa (Móvil) -->
                     <div class="md:hidden flex items-center">
-                        <button id="menu-toggle"
-                            class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500 transition duration-150 ease-in-out"
-                            aria-expanded="false">
-                            <svg class="block h-6 w-6" id="icon-menu" fill="none" viewBox="0 0 24 24"
-                                stroke="currentColor" aria-hidden="true">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M4 6h16M4 12h16M4 18h16" />
+                        <button id="menu-toggle" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500 transition duration-150 ease-in-out" aria-expanded="false">
+                            <svg class="block h-6 w-6" id="icon-menu" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
                             </svg>
-                            <svg class="hidden h-6 w-6" id="icon-close" fill="none" viewBox="0 0 24 24"
-                                stroke="currentColor" aria-hidden="true">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M6 18L18 6M6 6l12 12" />
+                            <svg class="hidden h-6 w-6" id="icon-close" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                             </svg>
                         </button>
                     </div>
                 </div>
             </div>
 
-            <!-- Menú Móvil Desplegable -->
             <div id="mobile-menu" class="hidden md:hidden absolute w-full bg-white shadow-xl">
                 <div class="pt-2 pb-3 space-y-1 px-4 border-t border-gray-100">
-                    <a href="index.html"
-                        class="block rounded-lg py-2 px-3 text-base font-bold text-indigo-600 bg-indigo-50">Precios</a>
-                    <a href="clientes.html"
-                        class="block rounded-lg py-2 px-3 text-base font-medium text-gray-700 hover:bg-indigo-50 hover:text-indigo-600">Clientes</a>
-                    <a href="proyectos.html"
-                        class="block rounded-lg py-2 px-3 text-base font-bold text-indigo-600 bg-indigo-50">Proyectos</a>
+                    <a href="index.html" class="block rounded-lg py-2 px-3 text-base font-bold text-indigo-600 bg-indigo-50">Precios</a>
+                    <a href="clientes.html" class="block rounded-lg py-2 px-3 text-base font-medium text-gray-700 hover:bg-indigo-50 hover:text-indigo-600">Clientes</a>
+                    <a href="proyectos.html" class="block rounded-lg py-2 px-3 text-base font-bold text-indigo-600 bg-indigo-50">Proyectos</a>
                 </div>
             </div>
         </header>
 
-        <!-- ==================== MAPA DE OPENSTREETMAP ==================== -->
         <div class="w-full mx-auto sm:px-6 lg:px-8">
             <div id="map" class="w-full h-screen"></div>
         </div>
-        <!-- ============================================================= -->
-
     </div>
 
     <div class="fab-container">
@@ -215,97 +176,61 @@
             ➕
         </button>
     </div>
-    <!-- FAB LISTA DE PROYECTOS -->
+
     <div class="fixed bottom-8 left-8 z-40">
-        <button id="openListBtn"
-            class="bg-black text-white w-14 h-14 rounded-full shadow-lg flex items-center justify-center text-xl hover:scale-110 transition"
-            title="Ver proyectos">
+        <button id="openListBtn" class="bg-black text-white w-14 h-14 rounded-full shadow-lg flex items-center justify-center text-xl hover:scale-110 transition" title="Ver proyectos">
             📋
         </button>
     </div>
 
-
     <div id="pointModal" class="fixed inset-0 bg-black/40 hidden items-center justify-center z-50">
-
         <div class="bg-white rounded-lg w-[95%] max-w-md p-4 space-y-3">
-
-            <h2 class="font-bold text-lg text-gray-800">
-                Nuevo Punto
-            </h2>
+            <h2 class="font-bold text-lg text-gray-800">Nuevo Punto</h2>
             <input type="hidden" id="clientId">
 
-            <!-- BUSCADOR DE CLIENTES -->
             <div class="relative">
-                <input id="clientSearch" class="w-full border rounded px-3 py-2 text-sm"
-                    placeholder="🔍 Buscar cliente por nombre o teléfono">
-
-                <div id="clientResults"
-                    class="absolute w-full bg-white border rounded mt-1 max-h-40 overflow-auto hidden z-50">
-                </div>
+                <input id="clientSearch" class="w-full border rounded px-3 py-2 text-sm" placeholder="🔍 Buscar cliente por nombre o teléfono">
+                <div id="clientResults" class="absolute w-full bg-white border rounded mt-1 max-h-40 overflow-auto hidden z-50"></div>
             </div>
-
-
 
             <input id="clientName" class="w-full border rounded px-3 py-2 text-sm" placeholder="Nombre del cliente">
-
             <input id="clientPhone" class="w-full border rounded px-3 py-2 text-sm" placeholder="Teléfono del cliente">
-
             <input id="material" class="w-full border rounded px-3 py-2 text-sm" placeholder="Material interesado">
-
             <input id="closeDate" type="date" class="w-full border rounded px-3 py-2 text-sm">
+            <textarea id="notes" rows="2" class="w-full border rounded px-3 py-2 text-sm" placeholder="Notas adicionales"></textarea>
 
-            <textarea id="notes" rows="2" class="w-full border rounded px-3 py-2 text-sm"
-                placeholder="Notas adicionales"></textarea>
-
-            <button id="useLocationBtn" class="w-full py-2 text-sm rounded bg-gray-100 hover:bg-gray-200">
-                📍 Usar mi ubicación actual
-            </button>
-
-            <button id="selectMapBtn" class="w-full py-2 text-sm rounded bg-gray-100 hover:bg-gray-200">
-                🗺️ Seleccionar en el mapa
-            </button>
+            <button id="useLocationBtn" class="w-full py-2 text-sm rounded bg-gray-100 hover:bg-gray-200">📍 Usar mi ubicación actual</button>
+            <button id="selectMapBtn" class="w-full py-2 text-sm rounded bg-gray-100 hover:bg-gray-200">🗺️ Seleccionar en el mapa</button>
 
             <div class="flex justify-end gap-2 pt-2">
-                <button id="cancelBtn" class="text-sm px-3 py-2 text-gray-600">
-                    Cancelar
-                </button>
-                <button id="savePointBtn" class="text-sm px-4 py-2 bg-indigo-600 text-white rounded">
-                    Guardar
-                </button>
+                <button id="cancelBtn" class="text-sm px-3 py-2 text-gray-600">Cancelar</button>
+                <button id="savePointBtn" class="text-sm px-4 py-2 bg-indigo-600 text-white rounded">Guardar</button>
             </div>
-
         </div>
     </div>
+
     <!-- MODAL LISTA DE PROYECTOS (PANTALLA COMPLETA) -->
     <div id="projectListModal" class="fixed inset-0 bg-white hidden z-50 flex flex-col">
-
-        <!-- HEADER -->
+        <!-- HEADER MODIFICADO PARA INCLUIR DESCARGA -->
         <div class="p-4 border-b flex items-center justify-between">
             <h2 class="font-bold text-lg">📋 Proyectos</h2>
-            <button id="closeListBtn" class="text-red-600 font-semibold text-sm">
-                Cerrar
-            </button>
+            <div class="flex items-center gap-4">
+                <!-- 🆕 BOTÓN DESCARGAR -->
+                <button id="downloadProjectsBtn" class="text-sm px-3 py-2 bg-green-600 text-white rounded font-semibold flex items-center gap-2 hover:bg-green-700">
+                    ⬇️ Descargar
+                </button>
+                <button id="closeListBtn" class="text-red-600 font-semibold text-sm">Cerrar</button>
+            </div>
         </div>
 
-        <!-- BUSCADOR -->
         <div class="p-4 border-b">
-            <input id="projectSearch" class="w-full border rounded px-3 py-2 text-sm"
-                placeholder="Buscar por nombre, teléfono, material o dirección">
+            <input id="projectSearch" class="w-full border rounded px-3 py-2 text-sm" placeholder="Buscar por nombre, teléfono, material o dirección">
         </div>
 
-        <!-- LISTA -->
-        <div id="projectList" class="flex-1 overflow-auto divide-y">
-            <!-- items -->
-        </div>
-
+        <div id="projectList" class="flex-1 overflow-auto divide-y"></div>
     </div>
 
-
-
-
-
     <script>
-
         // ----------------------------------------------------
         // NAVBAR
         // ----------------------------------------------------
@@ -349,19 +274,12 @@
         const projectListDiv = document.getElementById('projectList');
         const projectSearchInput = document.getElementById('projectSearch');
 
-
-
-
-        // ----------------------------------------------------
-        // MODAL
-        // ----------------------------------------------------
-
         const clientSearchInput = document.getElementById('clientSearch');
         const clientResults = document.getElementById('clientResults');
-
         const clientNameInput = document.getElementById('clientName');
         const clientPhoneInput = document.getElementById('clientPhone');
         const clientIdInput = document.getElementById('clientId');
+
         clientSearchInput.addEventListener('input', () => {
             const query = clientSearchInput.value.toLowerCase().trim();
             clientResults.innerHTML = '';
@@ -372,17 +290,11 @@
             }
 
             const matches = getClients().filter(c =>
-                `${c.name} ${c.lastname || ''} ${c.phone}`
-                    .toLowerCase()
-                    .includes(query)
+                `${c.name} ${c.lastname || ''} ${c.phone}`.toLowerCase().includes(query)
             );
 
             if (!matches.length) {
-                clientResults.innerHTML = `
-            <div class="px-3 py-2 text-sm text-gray-500">
-                Sin resultados
-            </div>
-        `;
+                clientResults.innerHTML = `<div class="px-3 py-2 text-sm text-gray-500">Sin resultados</div>`;
                 clientResults.classList.remove('hidden');
                 return;
             }
@@ -390,16 +302,10 @@
             matches.forEach(client => {
                 const item = document.createElement('div');
                 item.className = 'px-3 py-2 text-sm hover:bg-gray-100 cursor-pointer';
-
                 item.innerHTML = `
-            <div class="font-medium">
-                ${client.name} ${client.lastname || ''}
-            </div>
-            <div class="text-xs text-gray-500">
-                📞 ${client.phone}
-            </div>
-        `;
-
+                    <div class="font-medium">${client.name} ${client.lastname || ''}</div>
+                    <div class="text-xs text-gray-500">📞 ${client.phone}</div>
+                `;
                 item.onclick = () => selectClient(client);
                 clientResults.appendChild(item);
             });
@@ -407,42 +313,30 @@
             clientResults.classList.remove('hidden');
         });
 
-        //BLOQUEAR PINCH ZOOM CON JS (CLAVE)
         let lastTouchEnd = 0;
-
-        // 🚫 Bloquear doble tap zoom
         document.addEventListener('touchend', function (event) {
             const now = new Date().getTime();
-            if (now - lastTouchEnd <= 300) {
-                event.preventDefault();
-            }
+            if (now - lastTouchEnd <= 300) event.preventDefault();
             lastTouchEnd = now;
         }, { passive: false });
 
-        // 🚫 Bloquear pinch zoom
         document.addEventListener('gesturestart', e => e.preventDefault());
         document.addEventListener('gesturechange', e => e.preventDefault());
         document.addEventListener('gestureend', e => e.preventDefault());
-
-
 
         function selectClient(client) {
             clientNameInput.value = `${client.name} ${client.lastname || ''}`.trim();
             clientPhoneInput.value = client.phone;
             clientIdInput.value = client.id;
             clientNameInput.dataset.address = client.address || '';
-
             clientResults.classList.add('hidden');
             clientSearchInput.value = '';
         }
 
-
         clientPhoneInput.addEventListener('blur', () => {
             const phone = clientPhoneInput.value.trim();
             if (!phone) return;
-
             const client = findClientByPhone(phone);
-
             if (client) {
                 clientNameInput.value = `${client.name} ${client.lastname || ''}`.trim();
                 clientPhoneInput.value = client.phone;
@@ -454,245 +348,138 @@
             }
         });
 
-
         const modal = document.getElementById('pointModal');
 
-
         function resetModal() {
-            // Inputs principales
             clientNameInput.value = '';
             clientPhoneInput.value = '';
             material.value = '';
             closeDate.value = '';
             notes.value = '';
-
-            // Cliente vinculado
             clientIdInput.value = '';
             clientNameInput.dataset.address = '';
-
-            // Buscador
             clientSearchInput.value = '';
             clientResults.innerHTML = '';
             clientResults.classList.add('hidden');
-
-            // Estado del modal
             editingProjectId = null;
             selectedLatLng = null;
-
-            // Limpia marcador temporal
             if (tempMarker) {
                 map.removeLayer(tempMarker);
                 tempMarker = null;
             }
         }
 
-
         function openModal() {
             modal.classList.remove('hidden');
             modal.classList.add('flex');
-
             clientSearchInput.value = '';
             clientResults.classList.add('hidden');
-            // 🚫 Bloquear zoom del navegador
             document.body.classList.add('modal-open');
-
         }
+
         document.addEventListener('click', e => {
-            if (!clientResults.contains(e.target) &&
-                e.target !== clientSearchInput) {
+            if (!clientResults.contains(e.target) && e.target !== clientSearchInput) {
                 clientResults.classList.add('hidden');
             }
         });
 
-
-
         function closeModal() {
             modal.classList.add('hidden');
             editingProjectId = null;
-
-            // ✅ Restaurar gestos normales
             document.body.classList.remove('modal-open');
-
-            // 🔧 Forzar recálculo del mapa (MUY IMPORTANTE)
-            setTimeout(() => {
-                map.invalidateSize();
-            }, 200);
+            setTimeout(() => { map.invalidateSize(); }, 200);
         }
-
 
         // ----------------------------------------------------
         // MAPA
         // ----------------------------------------------------
         document.addEventListener('DOMContentLoaded', () => {
-
             map = L.map('map', {
-                scrollWheelZoom: false, // ❌ evita zoom accidental
-                touchZoom: true,        // ✅ zoom con dedos
-                dragging: true,         // ✅ mover mapa
-                tap: false              // ✅ evita bugs en móvil
+                scrollWheelZoom: false,
+                touchZoom: true,
+                dragging: true,
+                tap: false
             }).setView([13.80057, -88.86458], 14);
 
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                maxZoom: 19
-            }).addTo(map);
-
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(map);
             map.on('click', onMapClick);
 
             loadProjects();
             resetModal();
-            // 📍 UBICACIÓN EN TIEMPO REAL
             startLiveLocation();
+            
+            // 🆕 EVENTO PARA DESCARGAR PROYECTOS
+            document.getElementById('downloadProjectsBtn').addEventListener('click', downloadProjects);
         });
 
-        //UBICACIÓN EN TIEMPO REAL
         function startLiveLocation() {
+            if (!navigator.geolocation) { alert('Geolocalización no soportada'); return; }
+            watchId = navigator.geolocation.watchPosition(position => {
+                const lat = position.coords.latitude;
+                const lng = position.coords.longitude;
+                const accuracy = position.coords.accuracy;
+                const latlng = [lat, lng];
 
-            if (!navigator.geolocation) {
-                alert('Geolocalización no soportada');
-                return;
-            }
+                if (!userMarker) {
+                    userMarker = L.circleMarker(latlng, {
+                        radius: 8, color: '#2563eb', fillColor: '#3b82f6', fillOpacity: 1
+                    }).addTo(map);
 
-            watchId = navigator.geolocation.watchPosition(
-                position => {
-                    const lat = position.coords.latitude;
-                    const lng = position.coords.longitude;
-                    const accuracy = position.coords.accuracy;
+                    userAccuracyCircle = L.circle(latlng, {
+                        radius: accuracy, color: '#93c5fd', fillColor: '#bfdbfe', fillOpacity: 0.3
+                    }).addTo(map);
 
-                    const latlng = [lat, lng];
-
-                    // 🟦 Crear o mover marcador
-                    if (!userMarker) {
-                        userMarker = L.circleMarker(latlng, {
-                            radius: 8,
-                            color: '#2563eb',
-                            fillColor: '#3b82f6',
-                            fillOpacity: 1
-                        }).addTo(map);
-
-                        userAccuracyCircle = L.circle(latlng, {
-                            radius: accuracy,
-                            color: '#93c5fd',
-                            fillColor: '#bfdbfe',
-                            fillOpacity: 0.3
-                        }).addTo(map);
-
-                        map.setView(latlng, 16);
-                    } else {
-                        userMarker.setLatLng(latlng);
-                        userAccuracyCircle.setLatLng(latlng);
-                        userAccuracyCircle.setRadius(accuracy);
-                    }
-                },
-                error => {
-                    console.error(error);
-                    alert('No se pudo obtener tu ubicación');
-                },
-                {
-                    enableHighAccuracy: true,
-                    maximumAge: 1000,
-                    timeout: 10000
+                    map.setView(latlng, 16);
+                } else {
+                    userMarker.setLatLng(latlng);
+                    userAccuracyCircle.setLatLng(latlng);
+                    userAccuracyCircle.setRadius(accuracy);
                 }
-            );
+            }, error => { console.error(error); alert('No se pudo obtener tu ubicación'); }, {
+                enableHighAccuracy: true, maximumAge: 1000, timeout: 10000
+            });
         }
 
-
-        // ----------------------------------------------------
-        // CLICK EN MAPA
-        // ----------------------------------------------------
         function onMapClick(e) {
             if (!selectingFromMap) return;
-
             selectedLatLng = e.latlng;
-
             if (tempMarker) map.removeLayer(tempMarker);
             tempMarker = L.marker(selectedLatLng).addTo(map);
-
             selectingFromMap = false;
             map.getContainer().style.cursor = '';
-
             openModal();
         }
 
-        // ----------------------------------------------------
-        // BOTONES MODAL
-        // ----------------------------------------------------
-        document.getElementById('openModalBtn').onclick = () => {
-            resetModal();
-            openModal();
-        };
+        document.getElementById('openModalBtn').onclick = () => { resetModal(); openModal(); };
+        document.getElementById('cancelBtn').onclick = () => { resetModal(); closeModal(); };
+        document.getElementById('openListBtn').onclick = () => { renderProjectList(); projectListModal.classList.remove('hidden'); };
+        document.getElementById('closeListBtn').onclick = () => { projectListModal.classList.add('hidden'); };
+        projectSearchInput.addEventListener('input', e => { renderProjectList(e.target.value); });
 
-        document.getElementById('cancelBtn').onclick = () => {
-            resetModal();
-            closeModal();
-        };
-
-        //Botones Abrir/Cerrar lista
-        document.getElementById('openListBtn').onclick = () => {
-            renderProjectList();
-            projectListModal.classList.remove('hidden');
-        };
-
-        document.getElementById('closeListBtn').onclick = () => {
-            projectListModal.classList.add('hidden');
-        };
-
-        //Buscador en tiempo real
-        projectSearchInput.addEventListener('input', e => {
-            renderProjectList(e.target.value);
-        });
-
-
-
-        // ----------------------------------------------------
-        // UBICACIÓN ACTUAL
-        // ----------------------------------------------------
         document.getElementById('useLocationBtn').onclick = () => {
             navigator.geolocation.getCurrentPosition(pos => {
-                selectedLatLng = {
-                    lat: pos.coords.latitude,
-                    lng: pos.coords.longitude
-                };
-
+                selectedLatLng = { lat: pos.coords.latitude, lng: pos.coords.longitude };
                 if (tempMarker) map.removeLayer(tempMarker);
                 tempMarker = L.marker(selectedLatLng).addTo(map);
-
                 map.setView(selectedLatLng, 17);
             });
         };
 
-        // ----------------------------------------------------
-        // SELECCIONAR EN MAPA
-        // ----------------------------------------------------
         document.getElementById('selectMapBtn').onclick = () => {
             selectingFromMap = true;
-
-            // 🔴 OCULTAR MARCADOR ORIGINAL SI SE ESTÁ EDITANDO
             if (editingProjectId) {
                 const marker = markersMap.get(editingProjectId);
-                if (marker) {
-                    marker.remove();
-                }
+                if (marker) marker.remove();
             }
-
             closeModal();
             map.getContainer().style.cursor = 'crosshair';
         };
 
-
-        // ----------------------------------------------------
-        // FECHAS Y COLORES
-        // ----------------------------------------------------
         function daysRemaining(dateString) {
             if (!dateString) return 0;
-
             const [y, m, d] = dateString.split('-').map(Number);
-
-            const today = new Date();
-            today.setHours(0, 0, 0, 0);
-
-            const target = new Date(y, m - 1, d);
-            target.setHours(0, 0, 0, 0);
-
+            const today = new Date(); today.setHours(0, 0, 0, 0);
+            const target = new Date(y, m - 1, d); target.setHours(0, 0, 0, 0);
             return Math.round((target - today) / (1000 * 60 * 60 * 24));
         }
 
@@ -708,190 +495,113 @@
             return '#fecaca';
         }
 
-        // ----------------------------------------------------
-        // LOCALSTORAGE
-        // ----------------------------------------------------
-
-        function getClients() {
-            return JSON.parse(localStorage.getItem('clients') || '[]');
-        }
+        function getClients() { return JSON.parse(localStorage.getItem('clients') || '[]'); }
         function findClientByPhone(phone) {
             const clean = phone.replace(/[^0-9]/g, '');
-            return getClients().find(c =>
-                c.phone && c.phone.replace(/[^0-9]/g, '') === clean
-            );
+            return getClients().find(c => c.phone && c.phone.replace(/[^0-9]/g, '') === clean);
         }
 
+        function getStoredProjects() { return JSON.parse(localStorage.getItem('projects')) || []; }
+        function saveProjects(projects) { localStorage.setItem('projects', JSON.stringify(projects)); }
 
-
-        function getStoredProjects() {
-            return JSON.parse(localStorage.getItem('projects')) || [];
-        }
-
-        function saveProjects(projects) {
-            localStorage.setItem('projects', JSON.stringify(projects));
-        }
-
-        // ----------------------------------------------------
-        // CREAR MARKER + POPUP GRANDE
-        // ----------------------------------------------------
         function createMarker(project) {
             const days = daysRemaining(project.closeDate);
             const color = getMarkerColorByDays(days);
             const badgeBg = getBadgeBg(color);
 
             const marker = L.circleMarker([project.lat, project.lng], {
-                radius: 9,
-                color,
-                fillColor: color,
-                fillOpacity: 0.9
+                radius: 9, color, fillColor: color, fillOpacity: 0.9
             }).addTo(map);
 
             markersMap.set(project.id, marker);
 
             marker.bindPopup(`
-        <div style="min-width:260px;font-family:Inter,sans-serif">
-            
-            <div style="
-                background:${badgeBg};
-                color:#000;
-                padding:8px;
-                border-radius:8px;
-                font-weight:700;
-                text-align:center;
-                font-size:15px;
-                margin-bottom:10px;">
-                Faltan ${days} días
-            </div>
-
-            <div style="font-size:18px;font-weight:800;margin-bottom:8px">
-                ${project.name}
-            </div>
-
-            <div style="margin-bottom:6px">
-                📞 
-                <a href="tel:${project.phone}" style="color:#2563eb;font-weight:600">
-                    Llamar
-                </a>
-                &nbsp;|&nbsp;
-                <a href="https://wa.me/${project.phone.replace(/[^0-9]/g, '')}"
-                   target="_blank"
-                   style="color:#16a34a;font-weight:600">
-                    WhatsApp
-                </a>
-            </div>
-
-            <div style="margin-bottom:6px;font-size:14px">
-                🧱 ${project.material}
-            </div>
-            <div style="font-size:13px;color:#374151;margin-bottom:6px">
-    📍 ${project.address || 'Sin dirección'}
-</div>
-
-
-            <div style="font-size:13px;color:#374151;margin-bottom:10px">
-                📝 ${project.notes || 'Sin notas'}
-            </div>
-
-            <div style="display:flex;gap:8px">
-                <button onclick="editProject(${project.id})"
-                    style="flex:1;padding:6px;font-size:13px;
-                    background:#2563eb;color:#fff;border-radius:6px">
-                    Editar
-                </button>
-
-                <button onclick="deleteProject(${project.id})"
-                    style="flex:1;padding:6px;font-size:13px;
-                    background:#dc2626;color:#fff;border-radius:6px">
-                    Eliminar
-                </button>
-            </div>
-        </div>
-    `);
+                <div style="min-width:260px;font-family:Inter,sans-serif">
+                    <div style="background:${badgeBg};color:#000;padding:8px;border-radius:8px;font-weight:700;text-align:center;font-size:15px;margin-bottom:10px;">Faltan ${days} días</div>
+                    <div style="font-size:18px;font-weight:800;margin-bottom:8px">${project.name}</div>
+                    <div style="margin-bottom:6px">📞 <a href="tel:${project.phone}" style="color:#2563eb;font-weight:600">Llamar</a> &nbsp;|&nbsp; <a href="https://wa.me/${project.phone.replace(/[^0-9]/g, '')}" target="_blank" style="color:#16a34a;font-weight:600">WhatsApp</a></div>
+                    <div style="margin-bottom:6px;font-size:14px">🧱 ${project.material}</div>
+                    <div style="font-size:13px;color:#374151;margin-bottom:6px">📍 ${project.address || 'Sin dirección'}</div>
+                    <div style="font-size:13px;color:#374151;margin-bottom:10px">📝 ${project.notes || 'Sin notas'}</div>
+                    <div style="display:flex;gap:8px">
+                        <button onclick="editProject(${project.id})" style="flex:1;padding:6px;font-size:13px;background:#2563eb;color:#fff;border-radius:6px">Editar</button>
+                        <button onclick="deleteProject(${project.id})" style="flex:1;padding:6px;font-size:13px;background:#dc2626;color:#fff;border-radius:6px">Eliminar</button>
+                    </div>
+                </div>
+            `);
         }
 
-        // ----------------------------------------------------
-        // CARGAR PROYECTOS
-        // ----------------------------------------------------
-        function loadProjects() {
-            getStoredProjects().forEach(createMarker);
-        }
+        function loadProjects() { getStoredProjects().forEach(createMarker); }
 
-        //Funcion para cargar los proyectos en el modal
         function renderProjectList(filter = '') {
-
             let projects = getStoredProjects();
-
-            // 🔥 ORDENAR DE MÁS URGENTE A MENOS
-            projects.sort((a, b) =>
-                daysRemaining(a.closeDate) - daysRemaining(b.closeDate)
-            );
-
+            projects.sort((a, b) => daysRemaining(a.closeDate) - daysRemaining(b.closeDate));
             projectListDiv.innerHTML = '';
 
-            projects
-                .filter(p =>
-                    `${p.name} ${p.phone} ${p.material} ${p.address}`
-                        .toLowerCase()
-                        .includes(filter.toLowerCase())
-                )
+            projects.filter(p => `${p.name} ${p.phone} ${p.material} ${p.address}`.toLowerCase().includes(filter.toLowerCase()))
                 .forEach(project => {
-
                     const days = daysRemaining(project.closeDate);
                     const color = getMarkerColorByDays(days);
-
                     const item = document.createElement('div');
                     item.className = 'p-4 cursor-pointer hover:bg-gray-100';
-
                     item.innerHTML = `
-                <div class="flex justify-between items-center">
-                    <div>
-                        <div class="font-bold">${project.name}</div>
-                        <div class="text-sm text-gray-500">
-                            📞 ${project.phone}
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <div class="font-bold">${project.name}</div>
+                                <div class="text-sm text-gray-500">📞 ${project.phone}</div>
+                                <div class="text-sm">🧱 ${project.material}</div>
+                            </div>
+                            <span class="text-xs px-2 py-1 rounded-full bg-${color}-100">${days} días</span>
                         </div>
-                        <div class="text-sm">
-                            🧱 ${project.material}
-                        </div>
-                    </div>
-                    <span class="text-xs px-2 py-1 rounded-full bg-${color}-100">
-                        ${days} días
-                    </span>
-                </div>
-            `;
-
+                    `;
                     item.onclick = () => {
                         const marker = markersMap.get(project.id);
-                        if (marker) {
-                            map.setView(marker.getLatLng(), 17);
-                            marker.openPopup();
-                        }
+                        if (marker) { map.setView(marker.getLatLng(), 17); marker.openPopup(); }
                         projectListModal.classList.add('hidden');
                     };
-
                     projectListDiv.appendChild(item);
                 });
         }
 
-
+        // 🆕 ----------------------------------------------------
+        // FUNCIÓN PARA DESCARGAR PROYECTOS EN JSON
         // ----------------------------------------------------
-        // GUARDAR / EDITAR
-        // ----------------------------------------------------
-        document.getElementById('savePointBtn').onclick = () => {
-
-            if (!selectedLatLng) {
-                alert('Selecciona una ubicación');
+        function downloadProjects() {
+            const projects = getStoredProjects();
+            if (projects.length === 0) {
+                alert("No hay proyectos guardados para descargar.");
                 return;
             }
 
+            // Convertir array a JSON string con formato
+            const jsonStr = JSON.stringify(projects, null, 2);
+            
+            // Crear un Blob (archivo binario grande)
+            const blob = new Blob([jsonStr], { type: "application/json" });
+            
+            // Crear enlace de descarga
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            
+            // Nombre del archivo con fecha actual
+            const today = new Date().toISOString().split('T')[0];
+            a.download = `proyectos_${today}.json`;
+            
+            // Simular click y limpiar
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        document.getElementById('savePointBtn').onclick = () => {
+            if (!selectedLatLng) { alert('Selecciona una ubicación'); return; }
             let projects = getStoredProjects();
 
             if (editingProjectId) {
-
                 const index = projects.findIndex(p => p.id === editingProjectId);
                 if (index === -1) return;
-
-                // ACTUALIZAR DATOS DEL PROYECTO
                 projects[index] = {
                     ...projects[index],
                     clientId: clientIdInput.value || null,
@@ -904,19 +614,10 @@
                     lat: selectedLatLng.lat,
                     lng: selectedLatLng.lng
                 };
-
-                // 🔴 ELIMINAR MARCADOR VIEJO (EVITA DUPLICADOS)
                 const oldMarker = markersMap.get(editingProjectId);
-                if (oldMarker) {
-                    oldMarker.remove();
-                    markersMap.delete(editingProjectId);
-                }
-
-                // 🟢 CREAR MARCADOR NUEVO CON DATOS ACTUALIZADOS
+                if (oldMarker) { oldMarker.remove(); markersMap.delete(editingProjectId); }
                 createMarker(projects[index]);
-
             } else {
-
                 const project = {
                     id: Date.now(),
                     clientId: clientIdInput.value || null,
@@ -930,37 +631,22 @@
                     lng: selectedLatLng.lng,
                     createdAt: new Date().toISOString()
                 };
-
                 projects.push(project);
                 createMarker(project);
             }
 
             saveProjects(projects);
-
-            // LIMPIAR MARCADOR TEMPORAL
-            if (tempMarker) {
-                map.removeLayer(tempMarker);
-                tempMarker = null;
-            }
-
+            if (tempMarker) { map.removeLayer(tempMarker); tempMarker = null; }
             selectedLatLng = null;
-
             resetModal();
             closeModal();
         };
 
-
-
-        // ----------------------------------------------------
-        // EDITAR
-        // ----------------------------------------------------
         window.editProject = function (id) {
             const project = getStoredProjects().find(p => p.id === id);
             if (!project) return;
-
             editingProjectId = id;
             selectedLatLng = { lat: project.lat, lng: project.lng };
-
             clientNameInput.value = project.name;
             clientPhoneInput.value = project.phone;
             material.value = project.material;
@@ -968,62 +654,29 @@
             notes.value = project.notes || '';
             clientIdInput.value = project.clientId || '';
             clientNameInput.dataset.address = project.address || '';
-
             openModal();
         };
 
-
-        // ----------------------------------------------------
-        // ELIMINAR
-        // ----------------------------------------------------
         window.deleteProject = function (id) {
-
-            // 🟡 PRIMER CLICK → pedir confirmación
             if (deleteConfirmId !== id) {
                 deleteConfirmId = id;
-
-                // Cambiar texto del botón en el popup
-                const btn = document.querySelector(
-                    `button[onclick="deleteProject(${id})"]`
-                );
-
-                if (btn) {
-                    btn.textContent = '¿Confirmar?';
-                    btn.style.background = '#991b1b';
-                }
-
-                // ⏳ Cancelar confirmación automáticamente
+                const btn = document.querySelector(`button[onclick="deleteProject(${id})"]`);
+                if (btn) { btn.textContent = '¿Confirmar?'; btn.style.background = '#991b1b'; }
                 deleteTimeout = setTimeout(() => {
-                    if (btn) {
-                        btn.textContent = 'Eliminar';
-                        btn.style.background = '#dc2626';
-                    }
+                    if (btn) { btn.textContent = 'Eliminar'; btn.style.background = '#dc2626'; }
                     deleteConfirmId = null;
                 }, 3000);
-
                 return;
             }
-
-            // 🔴 SEGUNDO CLICK → eliminar definitivamente
             clearTimeout(deleteTimeout);
             deleteConfirmId = null;
-
             let projects = getStoredProjects().filter(p => p.id !== id);
             saveProjects(projects);
-
             const marker = markersMap.get(id);
-            if (marker) {
-                marker.remove();
-                markersMap.delete(id);
-            }
+            if (marker) { marker.remove(); markersMap.delete(id); }
         };
-
-
     </script>
-
-
 </body>
-
 </html>
 
 
