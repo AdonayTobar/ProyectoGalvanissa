@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>App Descontinuada</title>
+</head>
+<body>
+    <h1>Esta aplicación ha sido descontinuada.</h1>
+    <p>Por favor, elimina este ícono de tu pantalla de inicio.</p>
+
+    <script>
+        // 1. Limpiar el LocalStorage
+        try {
+            localStorage.clear();
+            console.log("LocalStorage limpiado.");
+        } catch (e) {}
+
+        // 2. Desactivar y eliminar el Service Worker
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.getRegistrations().then(function(registrations) {
+                for(let registration of registrations) {
+                    registration.unregister();
+                    console.log("Service Worker desactivado.");
+                }
+            }).catch(function(err) {
+                console.log('Error al desactivar SW:', err);
+            });
+        }
+    </script>
+</body>
+</html>
